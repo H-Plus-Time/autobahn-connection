@@ -13,36 +13,36 @@ $ bower install autobahn-connection
 
 If your browser does not have native support for webcomponents, make sure to include it. It's a good idea to do this conditionally (as per [Polymer for the Performance-obsessed'](https://aerotwist.com/blog/polymer-for-the-performance-obsessed/)); alternatively, a plain old script tag will do:
 
-```
+```html
 <script src="bower_components/webcomponentsjs/webcomponentsjs-lite.js"></script>
 ```
 
 Then import the element in your page:
 
-```
+```html
 <link rel="import" href="bower_components/autobahn-connection/autobahn-connection.html">
 ```
 
 ## Example Usage
 Declare the element:
 
-```
-	<autobahn-connection on-autobahn-auth-accepted="fooAuthAccepted" on-autobahn-auth-denied="fooAuthDenied"></autobahn-connection>
+```html
+<autobahn-connection on-autobahn-auth-accepted="fooAuthAccepted" on-autobahn-auth-denied="fooAuthDenied"></autobahn-connection>
 ```
 
 Add a listener to the autobahn-auth-accepted and autobahn-auth-denied events.
 
-```
-	<script>
-		Polymer({
-			fooAuthDenied: function() {
-				console.log('auth denied!');
-			},
-			fooAuthAccepted: function() {
-				console.log('auth accepted');
-			}
-		})
-	</script>
+```html
+<script>
+	Polymer({
+		fooAuthDenied: function() {
+			console.log('auth denied!');
+		},
+		fooAuthAccepted: function() {
+			console.log('auth accepted');
+		}
+	})
+</script>
 ```
 
 For more information on the library, see [autobahn.ws](autobahn.ws/js).
