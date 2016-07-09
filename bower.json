@@ -6,7 +6,7 @@
   ],
   "description": "A custom element wrapper for the Autobahn JS library",
   "keywords": [
-    "autobahn", "websockets"
+    "autobahn", "websockets", "web-components"
   ],
   "main": "autobahn-connection.html",
   "homepage": "https://github.com/H-Plus-Time/autobahn-connection/",

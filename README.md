@@ -1,38 +1,25 @@
 # \<autobahn-connection\>
 
+## Overview
+autobahn-connection creates an autobahn connection.By default, the connection is configured to use the cookie and WAMP-CRA methods, and the router address is set to ```<document.location.origin>/ws```.
 
+## Installation
 
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
-
-## Viewing Your Application
-
-```
-$ polymer serve
-```
-
-## Building Your Application
+Use [Bower](bower.io) to get the latest version of autobahn-connection
 
 ```
-$ polymer build
+$ bower install autobahn-connection
 ```
 
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
-
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
-
+If your browser does not have native support for webcomponents, make sure to include it. It's a good idea to do this conditionally (as per [Polymer for the Performance-obsessed'](https://aerotwist.com/blog/polymer-for-the-performance-obsessed/)); alternatively, a plain old script tag will do:
 ```
-$ polymer serve build/bundled
+<script src="bower_components/webcomponentsjs/webcomponentsjs-lite.js"></script>
 ```
 
-## Running Tests
-
-```
-$ polymer test
+Then import the element in your page:
+```<link rel="import" href="bower_components/autobahn-connection/autobahn-connection.html">
 ```
 
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
+## Usage
+Declare 
+For more information on the library, see [autobahn.ws](autobahn.ws/js).
