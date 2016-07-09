@@ -25,7 +25,9 @@ Declare the element:
 ```
 	<autobahn-connection on-autobahn-auth-accepted="fooAuthAccepted" on-autobahn-auth-denied="fooAuthDenied"></autobahn-connection>
 ```
+
 Add a listener to the autobahn-auth-accepted and autobahn-auth-denied events.
+```
 	<script>
 		Polymer({
 			fooAuthDenied: function() {
