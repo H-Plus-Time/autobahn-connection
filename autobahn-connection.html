@@ -1,0 +1,99 @@
+<link rel="import" href="../polymer/polymer.html">
+<script src="../bower_components/autobahnjs/autobahn.min.js"></script>
+
+<!--
+`autobahn-connection`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="autobahn-connection">
+    <template>
+    </template>
+    <script>
+        Polymer({
+            is: 'autobahn-connection',
+            properties: {
+                authid: String,
+                session: Object,
+                methods: {
+                    type: Object,
+                    reflectToAttribute: true,
+                    value: function() { return ['cookie', 'wampcra']; }
+                },
+                realm: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: function() { return 'realm1'; }
+                },
+                url: {
+                    type: String,
+                    reflectToAttribute: true
+                },
+                endpoint_suffix: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: function() { return '/ws';}
+                },
+                protocol_prefix: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: function() { return 'wss://';}
+                },
+                callables: Array
+            },
+            listeners: {
+
+            },
+
+            created: function() {
+
+            },
+
+            attached: function() {
+                this._connect();                
+            },
+
+            _onOpen: function(session, details) {
+                this.fire('auth', {session: session, details: details});
+            },
+
+            _onClose: function(reason, details) {
+                console.log("disconnected", reason, details.reason, details);
+                if(details.reason === "wamp.error.authentication_failed") {
+                    this.fire('auth-denied', {details: details});
+                }
+            },
+
+            _onChallenge: function(session, method, extra) {
+                console.log("onchallenge", method, extra);
+                console.log(extra);
+                if (method == 'wampcra') {
+                    console.log(user);
+                    return autobahn.auth_cra.sign(pass, extra.challenge);
+                }
+            },
+
+            _connect: function(user, pass) {
+                
+                // if no provided URL, or serving via localhost
+                if(this.url === undefined || window.location.host == 'localhost:8081') {
+                    this.url = "localhost:8080"
+                }
+                this.connection = new autobahn.Connection({
+                    url: this.protocol_prefix + this.url + this.endpoint_suffix,
+                    realm: this.realm,
+                    authmethods: this.methods,
+                    authid: user
+                });
+                this.onchallenge = this._onChallenge.bind(this);
+                this.connection.onclose = this._onClose.bind(this);
+                this.connection.onopen = this._onOpen.bind(this);
+                this.connection.open();
+            }
+
+        })
+    </script>
+</dom-module>
+
