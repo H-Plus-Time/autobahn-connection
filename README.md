@@ -14,7 +14,7 @@ $ bower install autobahn-connection
 If your browser does not have native support for webcomponents, make sure to include it. It's a good idea to do this conditionally (as per [Polymer for the Performance-obsessed'](https://aerotwist.com/blog/polymer-for-the-performance-obsessed/)); alternatively, a plain old script tag will do:
 
 ```html
-<script src="bower_components/webcomponentsjs/webcomponentsjs-lite.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 ```
 
 Then import the element in your page:
