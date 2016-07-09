@@ -70,7 +70,6 @@
                 console.log("onchallenge", method, extra);
                 console.log(extra);
                 if (method == 'wampcra') {
-                    console.log(user);
                     return autobahn.auth_cra.sign(pass, extra.challenge);
                 }
             },
@@ -87,7 +86,7 @@
                     authmethods: this.methods,
                     authid: user
                 });
-                this.onchallenge = this._onChallenge.bind(this);
+                this.connection.onchallenge = this._onChallenge.bind(this).bind(pass);
                 this.connection.onclose = this._onClose.bind(this);
                 this.connection.onopen = this._onOpen.bind(this);
                 this.connection.open();
