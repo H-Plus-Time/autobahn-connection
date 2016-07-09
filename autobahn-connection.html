@@ -1,6 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 <script src="../autobahnjs/autobahn.min.js"></script>
-
 <!--
 `autobahn-connection`
 
@@ -66,27 +65,28 @@
                 }
             },
 
-            _onChallenge: function(session, method, extra) {
-                console.log("onchallenge", method, extra);
-                console.log(extra);
-                if (method == 'wampcra') {
-                    return autobahn.auth_cra.sign(pass, extra.challenge);
-                }
-            },
-
             _connect: function(user, pass) {
                 
                 // if no provided URL, or serving via localhost
                 if(this.url === undefined || window.location.host == 'localhost:8081') {
                     this.url = "localhost:8080"
                 }
+
+                function challenge(session, method, extra) {
+                    console.log("onchallenge", method, extra);
+                    console.log(extra);
+                    if (method == 'wampcra') {
+                        console.log(pass);
+                        return autobahn.auth_cra.sign(pass, extra.challenge);
+                    }
+                };
                 this.connection = new autobahn.Connection({
                     url: this.protocol_prefix + this.url + this.endpoint_suffix,
                     realm: this.realm,
                     authmethods: this.methods,
-                    authid: user
+                    authid: user,
+                    onchallenge: challenge
                 });
-                this.connection.onchallenge = this._onChallenge.bind(this).bind(pass);
                 this.connection.onclose = this._onClose.bind(this);
                 this.connection.onopen = this._onOpen.bind(this);
                 this.connection.open();
@@ -95,4 +95,3 @@
         })
     </script>
 </dom-module>
-
