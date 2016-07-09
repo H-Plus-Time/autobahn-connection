@@ -56,13 +56,13 @@
             },
 
             _onOpen: function(session, details) {
-                this.fire('auth', {session: session, details: details});
+                this.fire('autobahn-auth-accepted', {session: session, details: details});
             },
 
             _onClose: function(reason, details) {
                 console.log("disconnected", reason, details.reason, details);
                 if(details.reason === "wamp.error.authentication_failed") {
-                    this.fire('auth-denied', {details: details});
+                    this.fire('autobahn-auth-denied', {details: details});
                 }
             },
 

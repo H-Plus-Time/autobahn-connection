@@ -1,7 +1,7 @@
 # \<autobahn-connection\>
 
 ## Overview
-autobahn-connection creates an autobahn connection.By default, the connection is configured to use the cookie and WAMP-CRA methods, and the router address is set to ```<document.location.origin>/ws```.
+autobahn-connection creates an autobahn connection. By default, the connection is configured to use the cookie and WAMP-CRA methods, and the router address is set to ```<document.location.origin>/ws```.
 
 ## Installation
 
@@ -20,6 +20,21 @@ Then import the element in your page:
 ```<link rel="import" href="bower_components/autobahn-connection/autobahn-connection.html">
 ```
 
-## Usage
-Declare 
+## Example Usage
+Declare the element:
+```
+	<autobahn-connection on-autobahn-auth-accepted="fooAuthAccepted" on-autobahn-auth-denied="fooAuthDenied"></autobahn-connection>
+```
+Add a listener to the autobahn-auth-accepted and autobahn-auth-denied events.
+	<script>
+		Polymer({
+			fooAuthDenied: function() {
+				console.log('auth denied!');
+			},
+			fooAuthAccepted: function() {
+				console.log('auth accepted');
+			}
+		})
+	</script>
+```
 For more information on the library, see [autobahn.ws](autobahn.ws/js).
