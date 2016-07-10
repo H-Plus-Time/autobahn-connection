@@ -16,6 +16,11 @@
             properties: {
                 authid: String,
                 session: Object,
+                connection: {
+                    type: Object,
+                    reflectToAttribute: true,
+                    notify: true
+                }
                 methods: {
                     type: Object,
                     reflectToAttribute: true,
