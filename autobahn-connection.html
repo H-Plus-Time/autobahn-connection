@@ -51,7 +51,7 @@
             },
 
             attached: function() {
-                this._connect();                
+                this.connect();                
             },
 
             _onOpen: function(session, details) {
@@ -63,9 +63,12 @@
                 if(details.reason === "wamp.error.authentication_failed") {
                     this.fire('autobahn-auth-denied', {details: details});
                 }
+                if(reason === "unreachable") {
+                    this.fire('autobahn-auth-unreachable', {details: details});
+                }
             },
 
-            _connect: function(user, pass) {
+            connect: function(user, pass) {
                 
                 // if no provided URL, or serving via localhost
                 if(this.url === undefined || window.location.host == 'localhost:8081') {
