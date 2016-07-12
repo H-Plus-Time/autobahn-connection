@@ -14,7 +14,10 @@
         Polymer({
             is: 'autobahn-connection',
             properties: {
-                authid: String,
+                authid: {
+                    type: String,
+                    reflectToAttribute: true
+                },
                 session: Object,
                 connection: {
                     type: Object,
@@ -94,6 +97,7 @@
                     authid: user,
                     onchallenge: challenge
                 });
+                this.authid = user;
                 this.connection.onclose = this._onClose.bind(this);
                 this.connection.onopen = this._onOpen.bind(this);
                 this.connection.open();
