@@ -14,7 +14,10 @@
         Polymer({
             is: 'autobahn-connection',
             properties: {
-                authid: String,
+                authid: {
+                    type: String,
+                    reflectToAttribute: true
+                },
                 session: Object,
                 connection: {
                     type: Object,
