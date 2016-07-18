@@ -62,6 +62,7 @@
             },
 
             _onOpen: function(session, details) {
+                this.authid = details.authid;
                 this.fire('autobahn-auth-accepted', {session: session, details: details});
             },
 
@@ -97,7 +98,6 @@
                     authid: user,
                     onchallenge: challenge
                 });
-                this.authid = user;
                 this.connection.onclose = this._onClose.bind(this);
                 this.connection.onopen = this._onOpen.bind(this);
                 this.connection.open();
