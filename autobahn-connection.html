@@ -4,7 +4,7 @@
 `autobahn-connection`
 
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
 
 <dom-module id="autobahn-connection">
@@ -34,6 +34,10 @@
                     type: String,
                     reflectToAttribute: true,
                     value: function() { return 'realm1'; }
+                },
+                disable_url: {
+                  type: String,
+                  value: _ => ""
                 },
                 url: {
                     type: String,
@@ -78,7 +82,7 @@
             },
 
             connect: function(user, pass) {
-                
+
                 // if no provided URL, or serving via localhost
                 if(this.url === undefined || window.location.host == 'localhost:8081') {
                     this.url = "localhost:8080"
@@ -92,13 +96,17 @@
                         return autobahn.auth_cra.sign(pass, extra.challenge);
                     }
                 };
-                this.connection = new autobahn.Connection({
-                    url: this.protocol_prefix + this.url + this.endpoint_suffix,
-                    realm: this.realm,
-                    authmethods: this.methods,
-                    authid: user,
-                    onchallenge: challenge
-                });
+
+                var connection_config = {
+                  url: `${this.protocol_prefix}/${this.url}/${this.endpoint_prefix}`,
+                  realm: this.realm
+                };
+                if(this.methods.indexOf("wampcra") != -1) {
+                  connection_config.authmethods = this.methods;
+                  connection_config.authid = user;
+                  connection_config.onchallenge = challenge;
+                }
+                this.connection = new autobahn.Connection(connection_config);
                 this.connection.onclose = this._onClose.bind(this);
                 this.connection.onopen = this._onOpen.bind(this);
                 this.connection.open();
