@@ -43,15 +43,15 @@
                     type: String,
                     reflectToAttribute: true
                 },
-                endpoint_suffix: {
+                endpointSuffix: {
                     type: String,
                     reflectToAttribute: true,
-                    value: function() { return '/ws';}
+                    value: function() { return '';}
                 },
                 protocolPrefix: {
                     type: String,
                     reflectToAttribute: true,
-                    value: function() { return 'wss://';}
+                    value: function() { return 'wss';}
                 },
                 callables: Array
             },
@@ -98,7 +98,7 @@
                 };
 
                 var connection_config = {
-                  url: `${this.protocolPrefix}/${this.url}/${this.endpoint_prefix}`,
+                  url: `${this.protocolPrefix}://${this.url}/${this.endpointSuffix}`,
                   realm: this.realm
                 };
                 if(this.methods.indexOf("wampcra") != -1) {
@@ -106,6 +106,7 @@
                   connection_config.authid = user;
                   connection_config.onchallenge = challenge;
                 }
+                console.log(connection_config);
                 this.connection = new autobahn.Connection(connection_config);
                 this.connection.onclose = this._onClose.bind(this);
                 this.connection.onopen = this._onOpen.bind(this);
