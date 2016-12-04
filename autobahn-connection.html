@@ -71,6 +71,22 @@
                 this.fire('autobahn-auth-accepted', {session: session, details: details});
             },
 
+            call(endpoint, args) {
+              return this.connection.session.call(endpoint, args)
+            },
+
+            subscribe(topic, func) {
+              return this.connection.session.subscribe(topic, func)
+            },
+
+            publish(topic, args) {
+              return this.connection.session.publish(topic, args)
+            },
+
+            register(endpoint, func) {
+              return this.connection.session.publish(endpoint, func)
+            },
+
             _onClose: function(reason, details) {
                 console.log("disconnected", reason, details.reason, details);
                 if(details.reason === "wamp.error.authentication_failed") {
