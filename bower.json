@@ -1,25 +1,10 @@
 {
   "name": "autobahn-connection",
-  "license": "https://github.com/H-Plus-Time/autobahn-connection/LICENSE",
-  "authors": [
-    "H-Plus-Time"
-  ],
-  "description": "A custom element wrapper for the Autobahn JS library",
-  "keywords": [
-    "autobahn", "websockets", "web-components"
-  ],
+  "description": "webcomponents wrapper around autobahnjs, for pubsub and rpc comms over websockets",
   "main": "autobahn-connection.html",
-  "homepage": "https://github.com/H-Plus-Time/autobahn-connection/",
-  "ignore": [
-    "**/.*,",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "autobahnjs": "autobahn#^0.10.1"
+    "autobahnjs": "autobahn#^0.11.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
