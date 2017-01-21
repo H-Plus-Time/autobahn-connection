@@ -1,0 +1,101 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="autobahn-import.html">
+<!--
+`autobahn-connection`
+
+
+@demo demo/index.html
+-->
+<script>
+    (function() {
+        'use strict';
+        AutobahnBehaviour = {
+
+            properties: {
+                connection: {
+                    type: Object,
+                    value: {},
+                    notify: true
+                },
+
+                authid: {
+                    type: String,
+                    reflectToAttribute: true,
+                    notify: true
+                },
+
+                authMethods: {
+                    type: Array,
+                    value: function() { return ['anonymous']}
+                },
+
+                realm: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: _ => 'realm1'
+                },
+
+                /*
+                 * Connection url, must use the correct protocol (wss or ws)
+                */
+                connection_url: {
+                    type: String,
+                    value: _ => 'ws://localhost:8080/ws'
+                }
+            },
+
+            _on_close(reason, details) {
+                console.log("disconnected", reason, details.reason, details);
+                this.dispatchEvent(
+                    new CustomEvent('autobahn-closed',
+                        {detail: {reason: reason, details: details},
+                        bubbles: true}
+                    )
+                )
+            },
+
+            _on_open(session, details) {
+                this.authid = details.authid;
+                this.dispatchEvent(
+                    new CustomEvent('autobahn-opened',
+                        {detail: {session: session, details: details},
+                        bubbles: true}
+                    )
+                )
+            },
+
+            connect(user, pass) {
+                if(this.connection && this.connection.isopen) {
+                    this.connection.close();
+                }
+                function challenge(session, method, extra) {
+                    console.log("onchallenge", method, extra);
+                    console.log(extra);
+                    if (method == 'wampcra') {
+                        console.log(pass);
+                        return autobahn.auth_cra.sign(pass, extra.challenge);
+                    }
+                };
+
+                connection_config = {url: this.url, realm: this.realm}
+
+                if(this.methods.indexOf("wampcra") != -1) {
+                  connection_config.authmethods = this.authMethods;
+                  connection_config.authid = user;
+                  connection_config.onchallenge = challenge;
+                }
+                this.connection = new autobahn.Connection(connection_config);
+                this.connection.onclose = this._on_close.bind(this);
+                this.connection.onopen = this._on_open.bind(this);
+                this.connection.open();
+            },
+
+            attached() {
+                // init connection
+                if(this.authMethods == ['anonymous']) {
+                    this.connect(null, null);
+                }
+            }
+        }
+    })();
+</script>
