@@ -1,109 +1,73 @@
 <link rel="import" href="../polymer/polymer.html">
-<script src="../autobahnjs/autobahn.min.js"></script>
+<link rel="import" href="autobahn-import.html">
 <!--
 `autobahn-connection`
 
 
 @demo demo/index.html
 -->
+<script>
+    (function() {
+        'use strict';
+        AutobahnBehaviour = {
 
-<dom-module id="autobahn-connection">
-    <template>
-    </template>
-    <script>
-        Polymer({
-            is: 'autobahn-connection',
             properties: {
+                connection: {
+                    type: Object,
+                    value: {},
+                    notify: true
+                },
+
                 authid: {
                     type: String,
                     reflectToAttribute: true,
                     notify: true
                 },
-                session: Object,
-                connection: {
-                    type: Object,
-                    reflectToAttribute: true,
-                    notify: true
+
+                authMethods: {
+                    type: Array,
+                    value: function() { return ['anonymous']}
                 },
-                methods: {
-                    type: Object,
-                    reflectToAttribute: true,
-                    value: function() { return ['cookie', 'wampcra']; }
-                },
+
                 realm: {
                     type: String,
                     reflectToAttribute: true,
-                    value: function() { return 'realm1'; }
+                    value: _ => 'realm1'
                 },
-                disable_url: {
-                  type: String,
-                  value: _ => ""
-                },
-                url: {
+
+                /*
+                 * Connection url, must use the correct protocol (wss or ws)
+                */
+                connection_url: {
                     type: String,
-                    reflectToAttribute: true
-                },
-                endpointSuffix: {
-                    type: String,
-                    reflectToAttribute: true,
-                    value: function() { return '';}
-                },
-                protocolPrefix: {
-                    type: String,
-                    reflectToAttribute: true,
-                    value: function() { return 'wss';}
-                },
-                callables: Array
-            },
-            listeners: {
-
+                    value: _ => 'ws://localhost:8080/ws'
+                }
             },
 
-            created: function() {
-
-            },
-
-            attached: function() {
-            },
-
-            _onOpen: function(session, details) {
-                this.authid = details.authid;
-                this.fire('autobahn-auth-accepted', {session: session, details: details});
-            },
-
-            call(endpoint, args) {
-              return this.connection.session.call(endpoint, args)
-            },
-
-            subscribe(topic, func) {
-              return this.connection.session.subscribe(topic, func)
-            },
-
-            publish(topic, args) {
-              return this.connection.session.publish(topic, args)
-            },
-
-            register(endpoint, func) {
-              return this.connection.session.publish(endpoint, func)
-            },
-
-            _onClose: function(reason, details) {
+            _on_close(reason, details) {
                 console.log("disconnected", reason, details.reason, details);
-                if(details.reason === "wamp.error.authentication_failed") {
-                    this.fire('autobahn-auth-denied', {details: details});
-                }
-                if(reason === "unreachable") {
-                    this.fire('autobahn-auth-unreachable', {details: details});
-                }
+                this.dispatchEvent(
+                    new CustomEvent('autobahn-closed',
+                        {detail: {reason: reason, details: details},
+                        bubbles: true}
+                    )
+                )
             },
 
-            connect: function(user, pass) {
+            _on_open(session, details) {
+                this.authid = details.authid;
+                this.dispatchEvent(
+                    new CustomEvent('autobahn-opened',
+                        {detail: {session: session, details: details},
+                        bubbles: true}
+                    )
+                )
+            },
 
-                // if no provided URL, or serving via localhost
-                if(this.url === undefined || window.location.host == 'localhost:8081') {
-                    this.url = "localhost:8080"
+            connect(user, pass) {
+                if(this.connection && this.connection.isopen) {
+                    this.connection.close();
                 }
-
                 function challenge(session, method, extra) {
                     console.log("onchallenge", method, extra);
                     console.log(extra);
@@ -113,20 +77,36 @@
                     }
                 };
 
-                var connection_config = {
-                  url: `${this.protocolPrefix}://${this.url}/${this.endpointSuffix}`,
-                  realm: this.realm
-                };
+                connection_config = {url: this.url, realm: this.realm}
+
                 if(this.methods.indexOf("wampcra") != -1) {
-                  connection_config.authmethods = this.methods;
+                  connection_config.authmethods = this.authMethods;
                   connection_config.authid = user;
                   connection_config.onchallenge = challenge;
                 }
-                console.log(connection_config);
                 this.connection = new autobahn.Connection(connection_config);
-                this.connection.onclose = this._onClose.bind(this);
-                this.connection.onopen = this._onOpen.bind(this);
+                this.connection.onclose = this._on_close.bind(this);
+                this.connection.onopen = this._on_open.bind(this);
                 this.connection.open();
+            },
+
+            attached() {
+                // init connection
+                if(this.authMethods == ['anonymous']) {
+                    this.connect(null, null);
+                }
+            }
+        }
+    })();
+</script>
+<dom-module id="autobahn-connection">
+    <script>
+        Polymer({
+            is: 'autobahn-connection',
+
+            connect: function(user, pass) {
+
+
             }
 
         })
