@@ -77,9 +77,9 @@
                     }
                 };
 
-                connection_config = {url: this.url, realm: this.realm}
+                let connection_config = {url: this.connection_url, realm: this.realm}
 
-                if(this.methods.indexOf("wampcra") != -1) {
+                if(this.authMethods.indexOf("wampcra") != -1) {
                   connection_config.authmethods = this.authMethods;
                   connection_config.authid = user;
                   connection_config.onchallenge = challenge;
@@ -92,7 +92,7 @@
 
             attached() {
                 // init connection
-                if(this.authMethods == ['anonymous']) {
+                if(JSON.stringify(this.authMethods) == JSON.stringify(['anonymous'])) {
                     this.connect(null, null);
                 }
             }
